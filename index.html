@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Josh Mathur</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Josh Mathur – software engineer, researcher, builder." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:          #0a0a0a;
+      --bg-card:     #111111;
+      --bg-hover:    #181818;
+      --border:      #222222;
+      --border-soft: #1a1a1a;
+      --text:        #e8e6e0;
+      --muted:       #555552;
+      --muted-mid:   #888884;
+      --accent:      #7eb8f7;
+      --accent-dim:  #2a4a6b;
+      --font-display:"IBM Plex Mono", monospace;
+      --font-sans:   "Syne", system-ui, sans-serif;
+      --font-mono:   "JetBrains Mono", "Fira Code", monospace;
+      --nav-h:       60px;
+      --max-w:       1080px;
+      --pad:         24px;
+      --radius:      4px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; background: none; border: none; }
+    img { display: block; max-width: 100%; }
+    .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad); }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 10;
+      height: var(--nav-h);
+      border-bottom: 1px solid var(--border-soft);
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      animation: navFade 0.4s ease 0.1s forwards;
+    }
+    @keyframes navFade { to { opacity: 1; } }
+    .nav-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+    .nav-name {
+      font-family: var(--font-display);
+      font-size: 0.88rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links button {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--muted); letter-spacing: 0.08em; text-transform: lowercase;
+      padding: 4px 0; position: relative; transition: color 150ms;
+    }
+    .nav-links button::before {
+      content: "_";
+      opacity: 0;
+      margin-right: 2px;
+      transition: opacity 150ms;
+      color: var(--accent);
+    }
+    .nav-links button::after {
+      content: ""; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px; background: var(--accent); transition: width 200ms;
+    }
+    .nav-links button:hover { color: var(--text); }
+    .nav-links button:hover::before { opacity: 1; }
+    .nav-links button.active { color: var(--text); }
+    .nav-links button.active::after { width: 100%; }
+    @media (max-width: 520px) { .nav-links { gap: 20px; } .nav-links button { font-size: 0.65rem; } }
+
+    /* SECTIONS */
+    section { scroll-margin-top: calc(var(--nav-h) + 20px); padding: 80px 0; border-bottom: 1px solid var(--border-soft); }
+    section:last-of-type { border-bottom: none; }
+    .section-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); letter-spacing: 0.12em; text-transform: lowercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .section-label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--accent); }
+    h2 { font-family: var(--font-display); font-size: clamp(1.6rem, 2.8vw, 2.2rem); font-weight: 300; line-height: 1.2; letter-spacing: -0.02em; }
+
+    /* HERO */
+    #hero { min-height: calc(100vh - var(--nav-h)); display: flex; align-items: center; border-bottom: 1px solid var(--border-soft); padding: 60px 0; }
+    .hero-inner { display: grid; grid-template-columns: 1fr 280px; gap: 64px; align-items: center; width: 100%; }
+    @media (max-width: 780px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .hero-photo-col { order: -1; display: flex; justify-content: center; }
+    }
+    .hero-content { max-width: 600px; }
+
+    .hero-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted-mid);
+      letter-spacing: 0.08em; margin-bottom: 32px;
+      opacity: 0;
+      animation: slideLeft 0.5s ease 0.3s forwards;
+    }
+    .hero-status-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #4ade80;
+      box-shadow: 0 0 6px rgba(74,222,128,0.5);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 28px;
+    }
+    .hero-name .line1 {
+      display: block;
+      opacity: 0;
+      animation: slideLeft 0.5s ease 0.5s forwards;
+    }
+    .hero-name .line2 {
+      display: block;
+      color: var(--muted-mid);
+      font-style: italic;
+      opacity: 0;
+      animation: slideLeft 0.5s ease 0.65s forwards;
+    }
+
+    .hero-bio {
+      font-size: 0.95rem; color: var(--muted-mid); max-width: 500px;
+      line-height: 1.75; margin-bottom: 36px;
+      opacity: 0;
+      animation: slideLeft 0.5s ease 0.8s forwards;
+    }
+    .hero-bio strong { color: var(--text); font-weight: 500; }
+
+    .hero-links {
+      display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 52px;
+      opacity: 0;
+      animation: slideLeft 0.5s ease 0.95s forwards;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 20px; border-radius: var(--radius);
+      font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em;
+      transition: background 150ms, border-color 150ms, color 150ms;
+    }
+    .btn-solid { background: var(--text); color: var(--bg); border: 1px solid var(--text); }
+    .btn-solid:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+    .btn-outline { border: 1px solid var(--border); color: var(--muted-mid); }
+    .btn-outline:hover { border-color: var(--muted-mid); color: var(--text); }
+
+    .hero-meta {
+      display: flex; flex-wrap: wrap; gap: 32px;
+      border-top: 1px solid var(--border-soft); padding-top: 28px;
+      opacity: 0;
+      animation: slideLeft 0.5s ease 1.1s forwards;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); letter-spacing: 0.12em; text-transform: lowercase; }
+    .meta-value { font-size: 0.85rem; color: var(--muted-mid); font-family: var(--font-display); font-weight: 300; }
+
+    /* PHOTO */
+    .hero-photo-col {
+      display: flex; align-items: center; justify-content: flex-end;
+      opacity: 0;
+      animation: slideLeft 0.6s ease 0.6s forwards;
+    }
+    .photo-placeholder {
+      width: 260px; height: 320px; border-radius: var(--radius);
+      background: var(--bg-card); border: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; position: relative; overflow: hidden; flex-shrink: 0;
+    }
+    .photo-placeholder svg { opacity: 0.2; color: var(--muted-mid); }
+    .photo-placeholder-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--muted); text-align: center; line-height: 1.6; }
+
+    /* SLIDE REVEAL ANIMATION */
+    @keyframes slideLeft {
+      from { opacity: 0; transform: translateX(-24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 60ms; }
+    .reveal-d2 { transition-delay: 130ms; }
+    .reveal-d3 { transition-delay: 200ms; }
+    .reveal-d4 { transition-delay: 270ms; }
+
+    /* section label line animation */
+    .section-label::before {
+      width: 0;
+      transition: width 0.4s ease;
+    }
+    .reveal.visible .section-label::before,
+    .section-label.line-grow::before { width: 20px; }
+
+    /* PROJECTS */
+    #projects { padding-top: 80px; }
+    .projects-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 40px; gap: 16px; }
+    .projects-header p { font-size: 0.82rem; color: var(--muted); font-family: var(--font-mono); letter-spacing: 0.04em; }
+    .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    @media (max-width: 640px) { .projects-grid { grid-template-columns: 1fr; } }
+    .project-card {
+      background: var(--bg-card); padding: 28px; display: flex; flex-direction: column;
+      transition: background 200ms;
+      border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 2px; height: 0;
+      background: var(--accent);
+      transition: height 250ms ease;
+    }
+    .project-card:hover { background: var(--bg-hover); }
+    .project-card:hover::before { height: 100%; }
+    .project-card:nth-child(2n) { border-right: none; }
+    .project-card:nth-last-child(-n+2) { border-bottom: none; }
+    @media (max-width: 640px) {
+      .project-card { border-right: none; }
+      .project-card:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .project-card:last-child { border-bottom: none; }
+    }
+    .project-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .project-year { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); }
+    .project-tag { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); padding: 2px 8px; border: 1px solid var(--border); letter-spacing: 0.06em; text-transform: lowercase; }
+    .project-title { font-family: var(--font-display); font-size: 1.08rem; font-weight: 400; margin-bottom: 10px; line-height: 1.3; letter-spacing: -0.01em; }
+    .project-desc { font-size: 0.86rem; color: var(--muted-mid); line-height: 1.65; margin-bottom: 20px; flex: 1; }
+    .project-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+    .stack-tag { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); letter-spacing: 0.04em; }
+    .stack-tag::before { content: "#"; color: var(--accent-dim); margin-right: 1px; }
+    .project-links { display: flex; gap: 16px; margin-top: auto; }
+    .project-link { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.06em; display: flex; align-items: center; gap: 4px; transition: color 150ms; text-transform: lowercase; }
+    .project-link:hover { color: var(--accent); }
+    .project-link svg { width: 11px; height: 11px; }
+
+    /* RESEARCH */
+    .research-header { margin-bottom: 40px; }
+    .paper-list { display: flex; flex-direction: column; }
+    .paper-item {
+      display: grid; grid-template-columns: 72px 1fr auto;
+      gap: 0 24px; align-items: baseline;
+      padding: 24px 0; border-bottom: 1px solid var(--border-soft);
+      transition: padding-left 200ms ease;
+    }
+    .paper-item:first-child { border-top: 1px solid var(--border-soft); }
+    .paper-item:hover { padding-left: 8px; }
+    @media (max-width: 640px) { .paper-item { grid-template-columns: 1fr; gap: 8px; } }
+    .paper-year { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); padding-top: 2px; }
+    .paper-title-text { font-family: var(--font-display); font-size: 0.96rem; font-weight: 400; margin-bottom: 6px; line-height: 1.4; letter-spacing: -0.01em; }
+    .paper-desc { font-size: 0.83rem; color: var(--muted-mid); line-height: 1.65; }
+    .paper-subject { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); margin-top: 7px; letter-spacing: 0.06em; }
+    .paper-link-btn {
+      font-family: var(--font-mono); font-size: 0.63rem; color: var(--muted);
+      border: 1px solid var(--border); padding: 5px 12px;
+      white-space: nowrap; transition: color 150ms, border-color 150ms, background 150ms;
+      letter-spacing: 0.06em; text-transform: lowercase; align-self: start;
+    }
+    .paper-link-btn:hover { color: var(--bg); border-color: var(--accent); background: var(--accent); }
+
+    /* CONTACT */
+    #contact { padding-bottom: 100px; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; margin-top: 40px; }
+    @media (max-width: 720px) { .contact-grid { grid-template-columns: 1fr; gap: 40px; } }
+    .contact-copy { color: var(--muted-mid); line-height: 1.8; font-size: 0.92rem; }
+    .contact-copy p + p { margin-top: 14px; }
+    .contact-direct { margin-top: 32px; }
+    .contact-direct-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 12px; text-transform: lowercase; }
+    .contact-link-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .contact-link { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted-mid); border: 1px solid var(--border); padding: 6px 14px; letter-spacing: 0.05em; transition: color 150ms, border-color 150ms; text-transform: lowercase; }
+    .contact-link:hover { color: var(--text); border-color: var(--muted-mid); }
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); letter-spacing: 0.1em; text-transform: lowercase; }
+    .field input, .field textarea {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 10px 12px; color: var(--text);
+      font-family: var(--font-sans); font-size: 0.88rem; outline: none;
+      transition: border-color 150ms;
+    }
+    .field input:focus, .field textarea:focus { border-color: var(--accent); }
+    .field textarea { min-height: 110px; resize: vertical; line-height: 1.5; }
+    .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+    .form-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    #form-status { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted-mid); }
+    #form-status.ok { color: #4ade80; }
+    #form-status.err { color: #f06060; }
+
+    /* FOOTER */
+    footer { padding: 28px 0; border-top: 1px solid var(--border-soft); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); letter-spacing: 0.06em; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); transition: color 150ms; letter-spacing: 0.06em; text-transform: lowercase; }
+    .footer-links a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="wrap nav-inner">
+      <span class="nav-name">josh_mathur</span>
+      <ul class="nav-links">
+        <li><button data-target="hero" class="active">home</button></li>
+        <li><button data-target="projects">projects</button></li>
+        <li><button data-target="research">research</button></li>
+        <li><button data-target="contact">contact</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="wrap">
+
+      <!-- HERO -->
+      <section id="hero">
+        <div class="hero-inner">
+
+          <div class="hero-content">
+
+            <h1 class="hero-name">
+              <span class="line1" id="scramble-line1">Josh</span>
+              <span class="line2" id="scramble-line2">Mathur</span>
+            </h1>
+
+            <p class="hero-bio">
+              Incoming <strong>Management Engineering</strong> student at the
+              <strong>University of Waterloo</strong> (class of '31), interested in
+              building things at the intersection of software and systems thinking.
+              I like working on problems that are technical and human at the same time.
+            </p>
+
+            <div class="hero-links">
+              <button class="btn btn-solid" data-target="projects">view my work</button>
+              <button class="btn btn-outline" data-target="contact">get in touch</button>
+            </div>
+
+            <div class="hero-meta">
+              <div class="meta-item">
+                <span class="meta-label">location</span>
+                <span class="meta-value">Brampton, ON</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">focus</span>
+                <span class="meta-value">software · systems · ops</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">currently</span>
+                <span class="meta-value">Management Engineering @ Waterloo '31</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-photo-col">
+            <img src="portrait.jpg" alt="Josh Mathur" style="width:260px;height:320px;object-fit:cover;object-position:center top;border-radius:6px;border:1px solid #242424;" />
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects">
+        <div class="projects-header reveal">
+          <div>
+            <div class="section-label">selected work</div>
+            <h2>Projects</h2>
+          </div>
+          <p>// a few things i've built</p>
+        </div>
+
+        <div class="projects-grid">
+
+          <div class="project-card reveal reveal-d1">
+            <div class="project-meta">
+              <span class="project-year">2025</span>
+              <span class="project-tag">hackathon</span>
+            </div>
+            <h3 class="project-title">Moodify</h3>
+            <p class="project-desc">AI-powered journaling platform built at UofTHacks 12. Uses GPT to summarize entries, offer perspective through custom personas, and help users articulate their thoughts more clearly.</p>
+            <div class="project-stack">
+              <span class="stack-tag">Next.js</span>
+              <span class="stack-tag">TypeScript</span>
+              <span class="stack-tag">OpenAI API</span>
+              <span class="stack-tag">PostgreSQL</span>
+              <span class="stack-tag">Prisma</span>
+            </div>
+            <div class="project-links">
+              <a class="project-link" href="https://github.com/joshmathur/Moodify" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" clip-rule="evenodd"/></svg>
+                github
+              </a>
+              <a class="project-link" href="https://www.moodify.design/" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9c-.086 0-.17.01-.25.031A2 2 0 0 1 7 9H4a2 2 0 1 1 0-4h1.535c.218-.376.495-.714.82-1z"/><path d="M9 5.5a3 3 0 0 0-2.83 4h.765A2 2 0 0 1 9 6.5h3a2 2 0 1 1 0 4h-1.535a4.02 4.02 0 0 1-.82 1H12a3 3 0 1 0 0-6H9z"/></svg>
+                live
+              </a>
+            </div>
+          </div>
+
+          <div class="project-card reveal reveal-d2">
+            <div class="project-meta">
+              <span class="project-year">2025</span>
+              <span class="project-tag">research tool</span>
+            </div>
+            <h3 class="project-title">Parthenon Column Analyzer</h3>
+            <p class="project-desc">Django web app that models classical Greek columns as truncated cones to compute volume, mass, and moments of inertia. Supports three materials and defaults to the Parthenon's original dimensions (447 BC) — built as a companion tool to an independent structural investigation.</p>
+            <div class="project-stack">
+              <span class="stack-tag">Python</span>
+              <span class="stack-tag">Django</span>
+              <span class="stack-tag">HTML/CSS/JS</span>
+            </div>
+            <div class="project-links">
+              <a class="project-link" href="https://github.com/joshmathur/Classical-Column-Calculator" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" clip-rule="evenodd"/></svg>
+                github
+              </a>
+              <a class="project-link" href="https://ccrazykingjosh.pythonanywhere.com/" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9c-.086 0-.17.01-.25.031A2 2 0 0 1 7 9H4a2 2 0 1 1 0-4h1.535c.218-.376.495-.714.82-1z"/><path d="M9 5.5a3 3 0 0 0-2.83 4h.765A2 2 0 0 1 9 6.5h3a2 2 0 1 1 0 4h-1.535a4.02 4.02 0 0 1-.82 1H12a3 3 0 1 0 0-6H9z"/></svg>
+                live
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RESEARCH -->
+      <section id="research">
+        <div class="research-header reveal">
+          <div class="section-label">writing &amp; research</div>
+          <h2>Independent Research</h2>
+        </div>
+        <div class="paper-list">
+          <div class="paper-item reveal reveal-d1">
+            <span class="paper-year">2025</span>
+            <div class="paper-body">
+              <div class="paper-title-text">Does Heat Destroy the Vitamin C in Your Sports Drink?</div>
+              <div class="paper-desc">Quantified how heating Gatorade Fit across five temperatures (22&deg;C&ndash;100&deg;C) degrades its vitamin C content using iodometric titration &mdash; finding a 69.5% reduction at boiling point following an exponential decay pattern, raising questions about nutritional label accuracy under real-world storage conditions.</div>
+              <div class="paper-subject">chemistry &nbsp;&middot;&nbsp; independent investigation</div>
+            </div>
+            <a class="paper-link-btn" href="https://docs.google.com/document/d/1JJToSK-dQAhGdkoZLUzG2u7IKvzNv7AFCDMbbHz-Owo/edit?usp=sharing" target="_blank" rel="noreferrer">read &rarr;</a>
+          </div>
+          <div class="paper-item reveal reveal-d2">
+            <span class="paper-year">2025</span>
+            <div class="paper-body">
+              <div class="paper-title-text">Does Moving Weight Outward Make a Fidget Spinner Spin Longer?</div>
+              <div class="paper-desc">Designed a pendulum rig to apply a consistent force to a fidget spinner across four weight-radius configurations (0&ndash;3 cm), then measured spin time for each. The result contradicted the initial hypothesis &mdash; spin time dropped from 15.2 s to 7.2 s as radius grew. Used rotational kinetic energy equations to show why: the larger moment of inertia drastically reduced angular velocity (107.5 to 11.7 rad/s), leaving too little energy to overcome friction and air resistance.</div>
+              <div class="paper-subject">physics &nbsp;&middot;&nbsp; independent investigation</div>
+            </div>
+            <a class="paper-link-btn" href="https://docs.google.com/document/d/1HV3M5KiWypLSHvvwIrHDiMal0J8Y77y_deVpdY9Fvxs/edit?usp=sharing" target="_blank" rel="noreferrer">read &rarr;</a>
+          </div>
+          <div class="paper-item reveal reveal-d3">
+            <span class="paper-year">2025</span>
+            <div class="paper-body">
+              <div class="paper-title-text">Did the Ancient Greeks Use the Golden Ratio to Build the Parthenon?</div>
+              <div class="paper-desc">Used coordinate geometry and Desmos to plot and measure five structural proportions of the Parthenon, finding no evidence of the Golden Ratio (&phi; &asymp; 1.618) in its construction. Extended the analysis to structural mechanics &mdash; applying Euler's Buckling Formula and compressive strength calculations (with a custom Python script for moment of inertia) to show the columns were engineered far beyond what the roof load required, suggesting aesthetics drove the design more than structural necessity.</div>
+              <div class="paper-subject">mathematics &nbsp;&middot;&nbsp; independent investigation</div>
+            </div>
+            <a class="paper-link-btn" href="https://docs.google.com/document/d/1Wzuy1VfROOPKrjJ45RVL3yTWUYsw3jC8nZ3xwjckBy0/edit?usp=sharing" target="_blank" rel="noreferrer">read &rarr;</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact">
+        <div class="section-label reveal">get in touch</div>
+        <h2 class="reveal" style="margin-bottom: 0;">Contact</h2>
+        <div class="contact-grid">
+          <aside class="contact-copy reveal reveal-d1">
+            <p>If you think there's a fit, I'd love to hear what you're working on. I'm especially interested in roles where I can work on real problems with people who care about the craft.</p>
+            <p>Happy to send a resume, jump on a call, or just chat about a project you're building.</p>
+            <div class="contact-direct">
+              <div class="contact-direct-label">links</div>
+              <div class="contact-link-row">
+                <a class="contact-link" href="https://www.linkedin.com/in/josh-mathur-14248829a/" target="_blank" rel="noreferrer">linkedin</a>
+                <a class="contact-link" href="https://github.com/joshmathur" target="_blank" rel="noreferrer">github</a>
+                <a class="contact-link" href="#" target="_blank" rel="noreferrer">r&eacute;sum&eacute;</a>
+              </div>
+            </div>
+          </aside>
+          <form class="contact-form" id="contact-form" action="https://formspree.io/f/xqeyjkqq" method="POST" novalidate>
+            <div class="form-row">
+              <div class="field">
+                <label for="cf-name">name</label>
+                <input type="text" id="cf-name" name="name" autocomplete="name" placeholder="Your name" />
+              </div>
+              <div class="field">
+                <label for="cf-email">email *</label>
+                <input type="email" id="cf-email" name="email" autocomplete="email" placeholder="you@company.com" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="cf-msg">message *</label>
+              <textarea id="cf-msg" name="message" placeholder="What are you working on?" required></textarea>
+            </div>
+            <div class="form-footer">
+              <button class="btn btn-solid" type="submit">send message</button>
+              <span id="form-status"></span>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span class="footer-copy">&copy; <span id="yr"></span> josh mathur</span>
+      <div class="footer-links">
+        <a href="https://github.com/ccrazykingjosh" target="_blank" rel="noreferrer">github</a>
+        <a href="https://www.linkedin.com/in/josh-mathur-14248829a/" target="_blank" rel="noreferrer">linkedin</a>
+        <a href="mailto:joshmathur2008@gmail.com">email</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── scroll to section ── */
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 72, behavior: "smooth" });
+    }
+    document.querySelectorAll("[data-target]").forEach(btn => {
+      btn.addEventListener("click", () => scrollToSection(btn.dataset.target));
+    });
+
+    /* ── active nav ── */
+    const navBtns = {};
+    document.querySelectorAll(".nav-links button[data-target]").forEach(btn => {
+      navBtns[btn.dataset.target] = btn;
+    });
+    const sectionIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        Object.values(navBtns).forEach(b => b.classList.remove("active"));
+        if (navBtns[e.target.id]) navBtns[e.target.id].classList.add("active");
+      });
+    }, { threshold: 0.3 });
+    ["hero", "projects", "research", "contact"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) sectionIO.observe(el);
+    });
+
+    /* ── scroll reveal ── */
+    const revealIO = new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("visible");
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => revealIO.observe(el));
+
+    /* ── text scramble on name ── */
+    const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    function scramble(el, finalText, delay) {
+      setTimeout(() => {
+        let frame = 0;
+        const totalFrames = finalText.length * 4;
+        const interval = setInterval(() => {
+          el.textContent = finalText.split("").map((ch, i) => {
+            if (i < Math.floor(frame / 4)) return ch;
+            return ch === " " ? " " : CHARS[Math.floor(Math.random() * CHARS.length)];
+          }).join("");
+          frame++;
+          if (frame > totalFrames) {
+            el.textContent = finalText;
+            clearInterval(interval);
+          }
+        }, 35);
+      }, delay);
+    }
+    scramble(document.getElementById("scramble-line1"), "Josh", 600);
+    scramble(document.getElementById("scramble-line2"), "Mathur", 850);
+
+    /* ── contact form ── */
+    const form = document.getElementById("contact-form");
+    const status = document.getElementById("form-status");
+    form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const data = new FormData(form);
+  const res = await fetch(form.action, {
+    method: "POST", body: data,
+    headers: { "Accept": "application/json" }
+  });
+  if (res.ok) {
+    status.textContent = "thanks — i'll be in touch soon.";
+    status.className = "ok";
+    form.reset();
+  } else {
+    status.textContent = "something went wrong, email me directly.";
+    status.className = "err";
+  }
+});
+
+    document.getElementById("yr").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
